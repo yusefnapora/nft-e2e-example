@@ -1,74 +1,30 @@
-# 🏗 scaffold-eth
+# 🎟 nft-e2e-example
 
-> is everything you need to get started building decentralized applications on Ethereum! 🚀 
+> An end-to-end example of minting NFTs on Ethereum from your browser. Powered by nft.storage and scaffold-eth!
 
----
-
-
-#### [ 🏃‍♀️ Quick Start ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-quick-start)
-
-#### [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity)
-
-#### [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy)
-
-#### [ 📺 Frontend](https://github.com/austintgriffith/scaffold-eth#-frontend)
-- [ 🛰 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers)
-- [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks)
-- [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)
-- [ 🖲 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library)
-- [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers)
-- [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras)
--  <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B>
-
-#### [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges)
-- [ 🥩 Staking App](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
-- [ 🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
-
-#### [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials)
-- [ 🎟 Simple NFT ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
-
-#### [ Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth)
-- [ 🎨 Nifty.ink ](https://nifty.ink) ([code](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev))
-- [ 🧑‍🎤PunkWallet.io ](https://punkwallet.io/) ([code](https://github.com/austintgriffith/scaffold-eth/tree/punk-wallet))
-
-#### [🌉 Infrastructure ](https://github.com/austintgriffith/scaffold-eth#-infrastructure)
-
-- [ 🛰 The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph)
-- [ 🔬 Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)
-- [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan)
-- [ 🔶 Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura)
--  🟪 [ Blocknative ](https://github.com/austintgriffith/scaffold-eth#-blocknative)
-
-|-   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> - | - <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B> -|
-
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/austintgriffith/scaffold-eth)
-
-
----
-
-[![ethdenvervideo](https://user-images.githubusercontent.com/2653167/109873369-e2c58c00-7c2a-11eb-8adf-0ec4b8dcae1e.png)](https://youtu.be/33gnKe7ttCc?t=477)
-
-
----
----
 ---
 
 # 🏃‍♀️ Quick Start
 
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
+Clone this repository:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/yusefnapora/nft-e2e-example
 
-cd scaffold-eth
+cd nft-e2e-example
 ```
+
+Install dependencies:
 
 ```bash
 
 yarn install
 
 ```
+
+Run the frontend:
 
 ```bash
 
@@ -79,7 +35,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-cd scaffold-eth
+cd nft-e2e-example
 yarn chain
 
 ```
@@ -87,7 +43,7 @@ yarn chain
 > in a third terminal window:
 
 ```bash
-cd scaffold-eth
+cd nft-e2e-example
 yarn deploy
 
 ```
