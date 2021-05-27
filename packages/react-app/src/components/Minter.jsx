@@ -1,4 +1,4 @@
-import { Card, Upload, Input, Button } from "antd";
+import { Card, Upload, Input, Button, Col } from "antd";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import React, { useState } from "react";
 import { NFTStorage } from 'nft.storage';
