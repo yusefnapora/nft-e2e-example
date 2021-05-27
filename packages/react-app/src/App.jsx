@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Minter, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Minter, NFTViewer, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -22,26 +22,6 @@ import {
   useOnBlock,
   useUserProvider,
 } from "./hooks";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
-/*
-    Welcome to 🏗 scaffold-eth !
-
-    Code:
-    https://github.com/austintgriffith/scaffold-eth
-
-    Support:
-    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
-    or DM @austingriffith on twitter or telegram
-
-    You should get your own Infura.io ID and put it in `constants.js`
-    (this is your connection to the main Ethereum network for ENS etc.)
-
-
-    🌏 EXTERNAL CONTRACTS:
-    You can also bring in contract artifacts in `constants.js`
-    (and then use the `useExternalContractLoader()` hook!)
-*/
 
 /// 📡 What chain are your contracts deployed to?
 const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
@@ -269,6 +249,11 @@ function App(props) {
               Mint an NFT
             </Link>
           </Menu.Item>
+          <Menu.Item key="/view">
+            <Link
+              onClick={() => { setRoute("/view"); }}
+              to="/view">View an NFT</Link>
+          </Menu.Item>
           <Menu.Item key="/contract">
             <Link
               onClick={() => {
@@ -289,6 +274,14 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
+          </Route>
+
+          <Route path="/view">
+              <NFTViewer
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
           </Route>
 
           <Route exact path="/contract">

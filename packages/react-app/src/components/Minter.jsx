@@ -76,6 +76,7 @@ export default function Minter({
   const [description, setDescription] = useState("");
   const [minting, setMinting] = useState(false);
   const [status, setStatus] = useState("");
+  const [tokenId, setTokenId] = useState(null);
 
   const beforeUpload = (file, fileList) => {
     console.log(file, fileList);
@@ -139,9 +140,10 @@ export default function Minter({
         name: nftName, 
         image: file, 
         description 
-      }).then(() => {
+      }).then(newTokenId => {
         setMinting(false);
         console.log('minting complete');
+        setTokenId(newTokenId);
       })
     });
   }
@@ -151,7 +153,7 @@ export default function Minter({
       {minting ? <LoadingOutlined/> : "Mint!"}
     </Button>
   )
-
+  
   const minterForm = (
     <div style={{ margin: "auto", width: "70vw" }}>
       <Card
