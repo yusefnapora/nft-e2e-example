@@ -111,7 +111,7 @@ export default function Minter({
     </div>
   );
 
-  const preview = previewURL ? <img src={previewURL} /> : <div/>
+  const preview = previewURL ? <img src={previewURL} style={{maxWidth: "800px"}}/> : <div/>
 
   const nameField = (
     <Input placeholder="Enter a name for your NFT" onChange={e => {

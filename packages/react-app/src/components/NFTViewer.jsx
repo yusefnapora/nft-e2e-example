@@ -40,7 +40,7 @@ function NFTCard({
 }) {
   return (
     <Card>
-      <img src={nftData.image}/>
+      <img src={nftData.image} style={{maxWidth: "800px"}}/>
       <div>
         Name: {nftData.name}
       </div>
