@@ -1,50 +1,50 @@
-import { Card, Upload } from "antd";
+import { Card, Upload, Input, Button } from "antd";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import React, { useMemo, useState } from "react";
-import { useContractExistsAtAddress, useContractLoader } from "../hooks";
+import React, { useState } from "react";
+import { NFTStorage } from 'nft.storage';
+import { useContractLoader } from "../hooks";
 import Account from "./Account";
-import DisplayVariable from "./Contract/DisplayVariable";
-import FunctionForm from "./Contract/FunctionForm";
+import { Transactor } from "../helpers";
 
 const DEFAULT_CONTRACT_NAME = "NFTMinter";
 
-const noContractDisplay = (
-  <div>
-    Loading...{" "}
-    <div style={{ padding: 32 }}>
-      You need to run{" "}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
-        yarn run chain
-      </span>{" "}
-      and{" "}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
-        yarn run deploy
-      </span>{" "}
-      to see your contract here.
-    </div>
-    <div style={{ padding: 32 }}>
-      <span style={{ marginRight: 4 }} role="img" aria-label="warning">
-        ☢️
-      </span>
-      Warning: You might need to run
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
-        yarn run deploy
-      </span>{" "}
-      <i>again</i> after the frontend comes up!
-    </div>
-  </div>
-);
+// FIXME: don't hardcode the key! let user supply instead
+const NFT_STORAGE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQxMjY5RGIwQjdjNzA3Y0I0MjZCMjg2MUI1NTY2ZEEwZTZjQzVmOTAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYyMjA2NTE1OTYxMCwibmFtZSI6Im5mdHNjaG9vbC10ZXN0In0.DSgQ5yot5Qyp4_OMg16h7hHOSRUQK7jkjiH7sM3DHOE";
 
-const isQueryable = fn => (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length === 0;
+async function mintNFT({contract, ownerAddress, provider, gasPrice, setStatus, image, name, description}) {
+
+  // First we use the nft.storage client library to add the image and metadata to IPFS / Filecoin
+  const client = new NFTStorage({ token: NFT_STORAGE_KEY });
+  setStatus("Uploading to nft.storage...")
+  const metadata = await client.store({
+    name,
+    description,
+    image,
+  });
+  setStatus(`Upload complete! Minting token with metadata URI: ${metadata.url}`);
+
+  // the returned metadata.url has the IPFS URI we want to add.
+  // our smart contract already prefixes URIs with "ipfs://", so we remove it before calling the `mintToken` function
+  const metadataURI = metadata.url.replace(/^ipfs:\/\//, "");
+
+  const transactor = Transactor(provider, gasPrice);
+  const tx = await transactor(contract.mintToken(ownerAddress, metadataURI));
+
+  // TODO: show token ID
+  setStatus("Blockchain transaction sent, waiting confirmation...");
+
+  const receipt = await tx.wait();
+  let tokenId = null;
+  for (const event of receipt.events) {
+    if (event.event !== 'Transfer') {
+        continue
+    }
+    tokenId = event.args.tokenId.toString();
+    break;
+  }
+  setStatus(`Minted token #${tokenId}`);
+  return tokenId;
+}
 
 export default function Minter({
   customContract,
@@ -56,7 +56,7 @@ export default function Minter({
   price,
   blockExplorer,
 }) {
-  const contracts = useContractLoader(provider);
+  const contracts = useContractLoader(signer);
   let contract;
   if (!name) {
     name = DEFAULT_CONTRACT_NAME;
@@ -71,6 +71,10 @@ export default function Minter({
 
   const [file, setFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
+  const [nftName, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [minting, setMinting] = useState(false);
+  const [status, setStatus] = useState("");
 
   const beforeUpload = (file, fileList) => {
     console.log(file, fileList);
@@ -81,11 +85,9 @@ export default function Minter({
 
   const uploadButton = (
     <div>
-      <div>
-        <PlusOutlined />
-        <div style={{ marginTop: 8 }}>
-          Choose image
-        </div>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>
+        Choose image
       </div>
     </div>
   );
@@ -109,7 +111,40 @@ export default function Minter({
 
   const preview = previewURL ? <img src={previewURL} /> : <div/>
 
-  return (
+  const nameField = (
+    <Input placeholder="Enter a name for your NFT" onChange={e => {
+      setName(e.target.value);
+    }}/>
+  );
+
+  const descriptionField = (
+    <Input.TextArea placeholder="Enter a description" onChange={e => {
+      setDescription(e.target.value);
+    }}/>
+  );
+
+  const mintEnabled = file != null && !!nftName;
+
+  const startMinting = () => {
+    console.log(`minting nft with name ${nftName}`);
+    setMinting(true);
+    signer.getAddress().then(ownerAddress => {
+      mintNFT({ 
+        contract, provider, ownerAddress, gasPrice, setStatus,
+        name: nftName, image: file, description }).then(() => {
+        setMinting(false);
+        console.log('minting complete');
+      })
+    });
+  }
+  
+  const mintButton = (
+    <Button type="primary" disabled={!mintEnabled} onClick={startMinting}>
+      {minting ? <LoadingOutlined/> : "Mint!"}
+    </Button>
+  )
+
+  const minterForm = (
     <div style={{ margin: "auto", width: "70vw" }}>
       <Card
         title={
@@ -134,7 +169,14 @@ export default function Minter({
       >
         { file == null && uploadView }
         {preview}
+        {nameField}
+        {descriptionField}
+        {mintButton}
+        {status}
       </Card>
     </div>
   );
+
+
+  return minterForm;
 }

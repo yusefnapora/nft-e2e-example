@@ -60,5 +60,8 @@
       "**/hardhat",
       "**/hardhat/**"
     ]
+  },
+  "dependencies": {
+    "nft.storage": "^1.4.0"
   }
 }
