@@ -27,12 +27,13 @@ async function mintNFT({contract, ownerAddress, provider, gasPrice, setStatus, i
   // our smart contract already prefixes URIs with "ipfs://", so we remove it before calling the `mintToken` function
   const metadataURI = metadata.url.replace(/^ipfs:\/\//, "");
 
+  // scaffold-eth's Transactor helper gives us a nice UI popup when a transaction is sent
   const transactor = Transactor(provider, gasPrice);
   const tx = await transactor(contract.mintToken(ownerAddress, metadataURI));
 
-  // TODO: show token ID
   setStatus("Blockchain transaction sent, waiting confirmation...");
 
+  // Wait for the transaction to be confirmed, then get the token ID out of the emitted Transfer event.
   const receipt = await tx.wait();
   let tokenId = null;
   for (const event of receipt.events) {
@@ -130,8 +131,15 @@ export default function Minter({
     setMinting(true);
     signer.getAddress().then(ownerAddress => {
       mintNFT({ 
-        contract, provider, ownerAddress, gasPrice, setStatus,
-        name: nftName, image: file, description }).then(() => {
+        contract, 
+        provider, 
+        ownerAddress, 
+        gasPrice, 
+        setStatus,
+        name: nftName, 
+        image: file, 
+        description 
+      }).then(() => {
         setMinting(false);
         console.log('minting complete');
       })
